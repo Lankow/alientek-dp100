@@ -1,0 +1,120 @@
+﻿using System.Collections.Concurrent;
+
+namespace Alientek_DP100;
+
+public class AlientekDP100
+{
+    private readonly ConcurrentQueue<Func<Task>> _taskQueue = new();
+    private bool _runningTask = false;
+    
+    private TaskCompletionSource<Frame> _pendingResponse = null!;
+    private FrameFunctionType _expectedFunctionType;
+
+    public AlientekDP100()
+    {
+    }
+
+    private void Enqueue(Func<Task> task)
+    {
+        _taskQueue.Enqueue(task);
+        _ = ServiceQueue();
+    }
+
+    private async Task ServiceQueue()
+    {
+        if (_runningTask) return;
+
+        _runningTask = true;
+        try
+        {
+            while (_taskQueue.TryDequeue(out var task))
+            {
+                await task();
+            }
+        }
+        finally
+        {
+            _runningTask = false;
+        }
+    }
+    public async Task<Frame> SendFrameAndAwaitResponse(Frame frame, Func<Frame, bool> matchResponse)
+    {
+        var tcs = new TaskCompletionSource<Frame>();
+        Enqueue(async () =>
+        {
+            _pendingResponse = tcs;
+            _expectedFunctionType = frame.FunctionType;
+
+            var sentData = FrameParser.FrameToBytes(frame);
+
+            Console.WriteLine($"[SEND]: {BitConverter.ToString(sentData)}");
+
+
+            await Task.CompletedTask;
+        });
+        return await tcs.Task;
+    }
+
+    public void ReceiveFrame(byte[] rawData)
+    {
+        var frame = FrameParser.ParseInputReport(rawData);
+        if (frame != null && _pendingResponse != null)
+        {
+            _pendingResponse.TrySetResult(frame);
+        }
+    }
+
+    public async Task<BasicInfo> GetBasicInfo()
+    {
+        var frame = new Frame
+        {
+            DeviceAddress = 251,
+            FunctionType = FrameFunctionType.FRAME_BASIC_INFO,
+            Sequence = 0,
+            DataLen = 0,
+            Data = []
+        };
+        var response = await SendFrameAndAwaitResponse(frame, f => f.FunctionType == FrameFunctionType.FRAME_BASIC_INFO);
+        return BasicInfo.FromFrame(response);
+    }
+
+    public async Task<BasicSet> GetCurrentBasic()
+    {
+        var frameData = new byte[] { (byte)(0x80) };
+        var frame = new Frame
+        {
+            DeviceAddress = 251,
+            FunctionType = FrameFunctionType.FRAME_BASIC_SET,
+            Sequence = 0,
+            DataLen = (byte)frameData.Length,
+            Data = frameData
+        };
+        var response = await SendFrameAndAwaitResponse(frame, f => f.FunctionType == FrameFunctionType.FRAME_BASIC_SET);
+        return BasicSet.FromFrame(response);
+    }
+
+    public async Task<bool> SetBasic(BasicSet basicSet)
+    {
+        var copy = new BasicSet
+        {
+            Index = (byte)(basicSet.Index | 0x20),
+            State = basicSet.State,
+            VoSet = basicSet.VoSet,
+            IoSet = basicSet.IoSet,
+            OvpSet = basicSet.OvpSet,
+            OcpSet = basicSet.OcpSet
+        };
+
+        var frameData = copy.ToByteArray();
+        var frame = new Frame
+        {
+            DeviceAddress = 251,
+            FunctionType = FrameFunctionType.FRAME_BASIC_SET,
+            Sequence = 0,
+            DataLen = (byte)frameData.Length,
+            Data = frameData
+        };
+        var response = await SendFrameAndAwaitResponse(frame, f => f.FunctionType == FrameFunctionType.FRAME_BASIC_SET);
+        return response.Data[0] == 1;
+    }
+}
