@@ -8,10 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="ATK-DP100DLL">
-      <HintPath>dll\ATK-DP100DLL(x86).dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <PackageReference Include="System.IO.Ports" Version="9.0.4" />
   </ItemGroup>
 
 </Project>

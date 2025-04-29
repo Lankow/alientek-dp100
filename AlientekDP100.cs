@@ -1,17 +1,26 @@
 ﻿using System.Collections.Concurrent;
+using System.IO.Ports;
 
 namespace Alientek_DP100;
 
-public class AlientekDP100
+public class AlientekDP100 : IDisposable
 {
+    private readonly SerialPort _serialPort;
     private readonly ConcurrentQueue<Func<Task>> _taskQueue = new();
     private bool _runningTask = false;
-    
-    private TaskCompletionSource<Frame> _pendingResponse = null!;
+
+    private TaskCompletionSource<Frame>? _pendingResponse;
     private FrameFunctionType _expectedFunctionType;
 
-    public AlientekDP100()
+    public AlientekDP100(string portName, int baudRate = 9600)
     {
+        _serialPort = new SerialPort(portName, baudRate)
+        {
+            ReadTimeout = 1000,
+            WriteTimeout = 1000
+        };
+        _serialPort.DataReceived += SerialPort_DataReceived;
+        _serialPort.Open();
     }
 
     private void Enqueue(Func<Task> task)
@@ -37,6 +46,7 @@ public class AlientekDP100
             _runningTask = false;
         }
     }
+
     public async Task<Frame> SendFrameAndAwaitResponse(Frame frame, Func<Frame, bool> matchResponse)
     {
         var tcs = new TaskCompletionSource<Frame>();
@@ -46,21 +56,47 @@ public class AlientekDP100
             _expectedFunctionType = frame.FunctionType;
 
             var sentData = FrameParser.FrameToBytes(frame);
-
             Console.WriteLine($"[SEND]: {BitConverter.ToString(sentData)}");
 
+            _serialPort.Write(sentData, 0, sentData.Length);
 
             await Task.CompletedTask;
         });
         return await tcs.Task;
     }
 
+    private void SerialPort_DataReceived(object? sender, SerialDataReceivedEventArgs e)
+    {
+        try
+        {
+            var bytesToRead = _serialPort.BytesToRead;
+            if (bytesToRead < 6) return;
+
+            var buffer = new byte[bytesToRead];
+            _serialPort.Read(buffer, 0, bytesToRead);
+
+            ReceiveFrame(buffer);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] SerialPort_DataReceived: {ex.Message}");
+        }
+    }
+
     public void ReceiveFrame(byte[] rawData)
     {
-        var frame = FrameParser.ParseInputReport(rawData);
-        if (frame != null && _pendingResponse != null)
+        try
         {
-            _pendingResponse.TrySetResult(frame);
+            var frame = FrameParser.ParseInputReport(rawData);
+            if (frame != null && _pendingResponse != null)
+            {
+                Console.WriteLine($"[RECV]: {BitConverter.ToString(rawData)}");
+                _pendingResponse.TrySetResult(frame);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[RECV ERROR]: {ex.Message}");
         }
     }
 
@@ -116,5 +152,15 @@ public class AlientekDP100
         };
         var response = await SendFrameAndAwaitResponse(frame, f => f.FunctionType == FrameFunctionType.FRAME_BASIC_SET);
         return response.Data[0] == 1;
+    }
+
+    public void Dispose()
+    {
+        if (_serialPort.IsOpen)
+        {
+            _serialPort.DataReceived -= SerialPort_DataReceived;
+            _serialPort.Close();
+        }
+        _serialPort.Dispose();
     }
 }
