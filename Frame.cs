@@ -1,6 +1,4 @@
-﻿namespace Alientek_DP100;
-
-public enum FrameFunctionType : byte
+﻿public enum FrameFunctionType : byte
 {
     FRAME_DEVICE_INFO = 0x10,
     FRAME_FIRM_INFO = 17,

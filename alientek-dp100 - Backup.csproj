@@ -3,8 +3,11 @@
   <PropertyGroup>
 	<TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>alientek_dp100</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="System.IO.Ports" Version="4.7.0" />
+	<PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>
+
 </Project>

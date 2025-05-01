@@ -1,6 +1,4 @@
-﻿using System.Buffers.Binary;
-
-namespace Alientek_DP100;
+﻿using System;
 
 public class BasicInfo
 {
@@ -22,15 +20,20 @@ public class BasicInfo
         var data = frame.Data;
         return new BasicInfo
         {
-            Vin = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(0)),
-            Vout = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(2)),
-            Iout = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(4)),
-            VoMax = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(6)),
-            Temp1 = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(8)),
-            Temp2 = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(10)),
-            Dc5V = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(12)),
+            Vin = ToUInt16LE(data, 0),
+            Vout = ToUInt16LE(data, 2),
+            Iout = ToUInt16LE(data, 4),
+            VoMax = ToUInt16LE(data, 6),
+            Temp1 = ToUInt16LE(data, 8),
+            Temp2 = ToUInt16LE(data, 10),
+            Dc5V = ToUInt16LE(data, 12),
             OutMode = data[14],
             WorkSt = data[15]
         };
+    }
+
+    private static ushort ToUInt16LE(byte[] data, int offset)
+    {
+        return (ushort)(data[offset] | (data[offset + 1] << 8));
     }
 }

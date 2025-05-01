@@ -1,4 +1,4 @@
-﻿namespace Alientek_DP100;
+﻿using System;
 
 public static class FrameParser
 {

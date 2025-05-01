@@ -1,6 +1,4 @@
-﻿using System.Buffers.Binary;
-
-namespace Alientek_DP100;
+﻿using System;
 
 public class BasicSet
 {
@@ -21,10 +19,10 @@ public class BasicSet
         {
             Index = data[0],
             State = data[1],
-            VoSet = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(2)),
-            IoSet = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(4)),
-            OvpSet = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(6)),
-            OcpSet = BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(8))
+            VoSet = ToUInt16LE(data, 2),
+            IoSet = ToUInt16LE(data, 4),
+            OvpSet = ToUInt16LE(data, 6),
+            OcpSet = ToUInt16LE(data, 8)
         };
     }
 
@@ -33,10 +31,21 @@ public class BasicSet
         var result = new byte[10];
         result[0] = Index;
         result[1] = State;
-        BinaryPrimitives.WriteUInt16LittleEndian(result.AsSpan(2), VoSet);
-        BinaryPrimitives.WriteUInt16LittleEndian(result.AsSpan(4), IoSet);
-        BinaryPrimitives.WriteUInt16LittleEndian(result.AsSpan(6), OvpSet);
-        BinaryPrimitives.WriteUInt16LittleEndian(result.AsSpan(8), OcpSet);
+        FromUInt16LE(result, 2, VoSet);
+        FromUInt16LE(result, 4, IoSet);
+        FromUInt16LE(result, 6, OvpSet);
+        FromUInt16LE(result, 8, OcpSet);
         return result;
+    }
+
+    private static ushort ToUInt16LE(byte[] data, int offset)
+    {
+        return (ushort)(data[offset] | (data[offset + 1] << 8));
+    }
+
+    private static void FromUInt16LE(byte[] buffer, int offset, ushort value)
+    {
+        buffer[offset] = (byte)(value & 0xFF);
+        buffer[offset + 1] = (byte)((value >> 8) & 0xFF);
     }
 }

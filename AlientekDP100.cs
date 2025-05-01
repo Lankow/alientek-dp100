@@ -1,15 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.IO.Ports;
-
-namespace Alientek_DP100;
+using System.Threading.Tasks;
 
 public class AlientekDP100 : IDisposable
 {
     private readonly SerialPort _serialPort;
-    private readonly ConcurrentQueue<Func<Task>> _taskQueue = new();
+    private readonly ConcurrentQueue<Func<Task>> _taskQueue = new ConcurrentQueue<Func<Task>>();
     private bool _runningTask = false;
 
-    private TaskCompletionSource<Frame>? _pendingResponse;
+    private TaskCompletionSource<Frame> _pendingResponse;
     private FrameFunctionType _expectedFunctionType;
 
     public AlientekDP100(string portName, int baudRate = 9600)
@@ -65,7 +65,7 @@ public class AlientekDP100 : IDisposable
         return await tcs.Task;
     }
 
-    private void SerialPort_DataReceived(object? sender, SerialDataReceivedEventArgs e)
+    private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
     {
         try
         {
@@ -108,7 +108,7 @@ public class AlientekDP100 : IDisposable
             FunctionType = FrameFunctionType.FRAME_BASIC_INFO,
             Sequence = 0,
             DataLen = 0,
-            Data = []
+            Data = new byte[0]
         };
         var response = await SendFrameAndAwaitResponse(frame, f => f.FunctionType == FrameFunctionType.FRAME_BASIC_INFO);
         return BasicInfo.FromFrame(response);
