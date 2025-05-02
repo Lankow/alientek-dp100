@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alientek-DP100", "Alientek-DP100\Alientek-DP100.csproj", "{D015F0DE-609D-4BA0-AE59-410F3A01151F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlientekTest", "AlientekTest\AlientekTest.csproj", "{8A162660-249D-4C47-9CA0-F26FB90A13A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D015F0DE-609D-4BA0-AE59-410F3A01151F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D015F0DE-609D-4BA0-AE59-410F3A01151F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D015F0DE-609D-4BA0-AE59-410F3A01151F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A162660-249D-4C47-9CA0-F26FB90A13A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A162660-249D-4C47-9CA0-F26FB90A13A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A162660-249D-4C47-9CA0-F26FB90A13A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A162660-249D-4C47-9CA0-F26FB90A13A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
