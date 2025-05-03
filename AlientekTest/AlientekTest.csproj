@@ -36,9 +36,6 @@
     <Reference Include="Device.Net, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Device.Net.4.2.1\lib\net45\Device.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Hid.Net, Version=4.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hid.Net.4.2.1\lib\net45\Hid.Net.dll</HintPath>
-    </Reference>
     <Reference Include="HidSharp, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HidSharp.2.1.0\lib\net35\HidSharp.dll</HintPath>
     </Reference>
@@ -52,6 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlientekDP100.cs" />
+    <Compile Include="BasicInfo.cs" />
+    <Compile Include="BasicSet.cs" />
+    <Compile Include="Frame.cs" />
+    <Compile Include="FrameParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
