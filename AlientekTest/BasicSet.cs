@@ -16,39 +16,34 @@ namespace AlientekTest
             if (frame.FunctionType != FrameFunctionType.FRAME_BASIC_SET)
                 throw new ArgumentException("Invalid frame function type for BasicSet.");
 
+            if (frame.Data == null || frame.Data.Length < 10 || frame.DataLen < 10)
+                throw new ArgumentException("Frame data is too short.");
+
             var data = frame.Data;
+
             return new BasicSet
             {
                 Index = data[0],
                 State = data[1],
-                VoSet = ToUInt16LE(data, 2),
-                IoSet = ToUInt16LE(data, 4),
-                OvpSet = ToUInt16LE(data, 6),
-                OcpSet = ToUInt16LE(data, 8)
+                VoSet = Utils.ReadUInt16(data, 2),
+                IoSet = Utils.ReadUInt16(data, 4),
+                OvpSet = Utils.ReadUInt16(data, 6),
+                OcpSet = Utils.ReadUInt16(data, 8)
             };
         }
 
-        public byte[] ToByteArray()
+        public byte[] CreateBasicSetFrame(BasicSet basicSet)
         {
-            var result = new byte[10];
-            result[0] = Index;
-            result[1] = State;
-            FromUInt16LE(result, 2, VoSet);
-            FromUInt16LE(result, 4, IoSet);
-            FromUInt16LE(result, 6, OvpSet);
-            FromUInt16LE(result, 8, OcpSet);
-            return result;
-        }
+            var data = new byte[10];
 
-        private static ushort ToUInt16LE(byte[] data, int offset)
-        {
-            return (ushort)(data[offset] | (data[offset + 1] << 8));
-        }
+            data[0] = basicSet.Index;
+            data[1] = basicSet.State;
+            Utils.WriteUInt16(data, 2, basicSet.VoSet);
+            Utils.WriteUInt16(data, 4, basicSet.IoSet);
+            Utils.WriteUInt16(data, 6, basicSet.OvpSet);
+            Utils.WriteUInt16(data, 8, basicSet.OcpSet);
 
-        private static void FromUInt16LE(byte[] buffer, int offset, ushort value)
-        {
-            buffer[offset] = (byte)(value & 0xFF);
-            buffer[offset + 1] = (byte)((value >> 8) & 0xFF);
+            return data;
         }
     }
 

@@ -19,24 +19,23 @@ namespace AlientekTest
             if (frame.FunctionType != FrameFunctionType.FRAME_BASIC_INFO)
                 throw new ArgumentException("Invalid frame function type for BasicInfo.");
 
+            if (frame.Data == null || frame.Data.Length < 16 || frame.DataLen < 16)
+                throw new ArgumentException("Frame data is too short.");
+
             var data = frame.Data;
+
             return new BasicInfo
             {
-                Vin = ToUInt16LE(data, 0),
-                Vout = ToUInt16LE(data, 2),
-                Iout = ToUInt16LE(data, 4),
-                VoMax = ToUInt16LE(data, 6),
-                Temp1 = ToUInt16LE(data, 8),
-                Temp2 = ToUInt16LE(data, 10),
-                Dc5V = ToUInt16LE(data, 12),
+                Vin = Utils.ReadUInt16(data, 0),
+                Vout = Utils.ReadUInt16(data, 2),
+                Iout = Utils.ReadUInt16(data, 4),
+                VoMax = Utils.ReadUInt16(data, 6),
+                Temp1 = Utils.ReadUInt16(data, 8),
+                Temp2 = Utils.ReadUInt16(data, 10),
+                Dc5V = Utils.ReadUInt16(data, 12),
                 OutMode = data[14],
-                WorkSt = data[15]
+                WorkSt = data[15],
             };
-        }
-
-        private static ushort ToUInt16LE(byte[] data, int offset)
-        {
-            return (ushort)(data[offset] | (data[offset + 1] << 8));
         }
     }
 }
