@@ -32,7 +32,7 @@ namespace AlientekTest
             };
         }
 
-        public byte[] CreateBasicSetFrame(BasicSet basicSet)
+        public byte[] ToByteArray(BasicSet basicSet)
         {
             var data = new byte[10];
 

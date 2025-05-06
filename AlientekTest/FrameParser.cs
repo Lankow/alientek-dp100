@@ -4,30 +4,59 @@ namespace AlientekTest
 {
     public static class FrameParser
     {
-        public static byte[] FrameToBytes(Frame frame)
+        public static Frame FromByteArray(byte[] rawData)
         {
-            int totalLength = 4 + frame.DataLen + 2;
-            byte[] buffer = new byte[totalLength];
+            if (rawData == null || rawData.Length < 6)
+                throw new ArgumentException("Invalid raw frame data");
 
-            buffer[0] = frame.DeviceAddress;
-            buffer[1] = (byte)frame.FunctionType;
-            buffer[2] = frame.Sequence;
-            buffer[3] = frame.DataLen;
+            byte deviceAddress = rawData[0];
+            byte functionType = rawData[1];
+            byte sequence = rawData[2];
+            byte dataLen = rawData[3];
 
-            if (frame.Data != null && frame.Data.Length > 0)
+            if (rawData.Length != 4 + dataLen + 2) // Header + Data + CRC
+                throw new ArgumentException("Incorrect frame length");
+
+            byte[] data = new byte[dataLen];
+            if (dataLen > 0)
             {
-                Array.Copy(frame.Data, 0, buffer, 4, frame.Data.Length);
+                Array.Copy(rawData, 4, data, 0, dataLen);
             }
 
-            ushort crc = Crc16Modbus(buffer, 0, 4 + frame.DataLen);
+            ushort receivedCrc = Utils.ReadUInt16(rawData, 4 + dataLen);
+            ushort computedCrc = Crc16Modbus(rawData, 0, 4 + dataLen);
 
-            buffer[4 + frame.DataLen] = (byte)(crc & 0xFF);
-            buffer[5 + frame.DataLen] = (byte)((crc >> 8) & 0xFF);
+            if (receivedCrc != computedCrc)
+                throw new InvalidOperationException($"CRC mismatch: received 0x{receivedCrc:X4}, computed 0x{computedCrc:X4}");
 
-            return buffer;
+            return new Frame
+            {
+                DeviceAddress = deviceAddress,
+                FunctionType = (FrameFunctionType)functionType,
+                Sequence = sequence,
+                DataLen = dataLen,
+                Data = data
+            };
         }
 
-        public static ushort Crc16Modbus(byte[] data, int offset, int length)
+        public static byte[] ToByteArray(Frame frame)
+        {
+            byte[] frameBuffer = new byte[4 + frame.Data.Length + 2];
+
+            frameBuffer[0] = frame.DeviceAddress;
+            frameBuffer[1] = (byte)frame.FunctionType;
+            frameBuffer[2] = frame.Sequence;
+            frameBuffer[3] = frame.DataLen;
+
+            Buffer.BlockCopy(frame.Data, 0, frameBuffer, 4, frame.Data.Length);
+
+            frameBuffer[frameBuffer.Length - 2] = 0;
+            frameBuffer[frameBuffer.Length - 1] = 0;
+
+            return frameBuffer;
+        }
+
+        private static ushort Crc16Modbus(byte[] data, int offset, int length)
         {
             const ushort polynomial = 0xA001;
             ushort crc = 0xFFFF;
@@ -44,41 +73,6 @@ namespace AlientekTest
                 }
             }
             return crc;
-        }
-
-        internal static Frame ParseInputReport(byte[] rawData)
-        {
-            if (rawData == null || rawData.Length < 6)
-                throw new ArgumentException("Invalid raw frame data");
-
-            byte deviceAddress = rawData[0];
-            byte functionType = rawData[1];
-            byte sequence = rawData[2];
-            byte dataLen = rawData[3];
-
-            if (rawData.Length != 4 + dataLen + 2)
-                throw new ArgumentException("Incorrect frame length");
-
-            byte[] data = new byte[dataLen];
-            if (dataLen > 0)
-            {
-                Array.Copy(rawData, 4, data, 0, dataLen);
-            }
-
-            ushort receivedCrc = (ushort)(rawData[4 + dataLen] | (rawData[5 + dataLen] << 8));
-            ushort computedCrc = Crc16Modbus(rawData, 0, 4 + dataLen);
-
-            if (receivedCrc != computedCrc)
-                throw new InvalidOperationException($"CRC mismatch: received 0x{receivedCrc:X4}, computed 0x{computedCrc:X4}");
-
-            return new Frame
-            {
-                DeviceAddress = deviceAddress,
-                FunctionType = (FrameFunctionType)functionType,
-                Sequence = sequence,
-                DataLen = dataLen,
-                Data = data
-            };
         }
     }
 
