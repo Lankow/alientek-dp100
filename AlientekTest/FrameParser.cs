@@ -49,9 +49,9 @@ namespace AlientekTest
             frameBuffer[3] = frame.DataLen;
 
             Buffer.BlockCopy(frame.Data, 0, frameBuffer, 4, frame.Data.Length);
+            var checksum = Crc16Modbus(frameBuffer, 0, frameBuffer.Length - 2);
 
-            frameBuffer[frameBuffer.Length - 2] = 0;
-            frameBuffer[frameBuffer.Length - 1] = 0;
+            Utils.WriteUInt16(frameBuffer, frameBuffer.Length - 2, checksum);
 
             return frameBuffer;
         }

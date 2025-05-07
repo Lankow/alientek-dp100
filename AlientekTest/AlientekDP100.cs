@@ -1,5 +1,7 @@
 ﻿using HidSharp;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AlientekTest
 {
@@ -7,6 +9,7 @@ namespace AlientekTest
     {
         private const string ProductName = "ATK-MDP100";
         private const int VendorId = 0x2e3c;
+        private const int DeviceAddress = 251;
 
         private readonly HidDevice _device;
         private readonly HidStream _stream;
@@ -36,26 +39,47 @@ namespace AlientekTest
             Console.WriteLine(_stream == null);
         }
 
-        public void GetBasicInfo()
+        public async Task<BasicInfo> GetBasicInfo()
         {
             var frame = new Frame
             {
-                DeviceAddress = 251,
+                DeviceAddress = DeviceAddress,
                 FunctionType = FrameFunctionType.FRAME_BASIC_INFO,
                 Sequence = 0,
                 DataLen = 0,
                 Data = Array.Empty<byte>()
             };
+
+            WriteFrame(frame);
+            var response = await ReadFrame(FrameFunctionType.FRAME_BASIC_INFO);
+            
+            if(response != null) return BasicInfo.FromFrame(response);
+
+            return null;
         }
 
-        private Frame SendFrameForResponse()
+        private async void WriteFrame(Frame frame)
         {
-            return new Frame();
+            var frameBuffer = FrameParser.ToByteArray(frame);
+            await _stream.WriteAsync(frameBuffer, 0, 7 + frame.DataLen);
         }
 
-        private void SendFrame(Frame frame)
+        private async Task<Frame> ReadFrame(FrameFunctionType expectedFrameFunctionType)
         {
+            var buffer = new byte[_device.GetMaxInputReportLength()];
 
+            var count = await _stream.ReadAsync(buffer, 0, buffer.Length);
+
+            if (count > 0)
+            {
+                var frame = FrameParser.FromByteArray(buffer.Take(count).ToArray());
+                if (frame != null && frame.FunctionType == expectedFrameFunctionType)
+                {
+                    return frame;
+                }
+            }
+
+            return null;
         }
     }
 }
