@@ -1,5 +1,6 @@
 ﻿using HidSharp;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace AlientekTest
         private const int DeviceAddress = 251;
 
         private readonly HidDevice _device;
-        private readonly HidStream _stream;
+        private HidStream _stream;
 
         public AlientekDP100()
         {
@@ -31,16 +32,17 @@ namespace AlientekTest
                 }
             }
 
-            if (_device == null && !_device.TryOpen(out _stream))
+            if (_device == null)
             {
                 throw new InvalidOperationException($"Unable to open {ProductName} device.");
             }
 
-            Console.WriteLine(_stream == null);
+            _device.TryOpen(out _stream);
         }
 
         public async Task<BasicInfo> GetBasicInfo()
         {
+
             var frame = new Frame
             {
                 DeviceAddress = DeviceAddress,
@@ -50,29 +52,29 @@ namespace AlientekTest
                 Data = Array.Empty<byte>()
             };
 
-            WriteFrame(frame);
+            await WriteFrame(frame);
+
             var response = await ReadFrame(FrameFunctionType.FRAME_BASIC_INFO);
-            
-            if(response != null) return BasicInfo.FromFrame(response);
+
+            if (response != null) return BasicInfo.FromFrame(response);
 
             return null;
         }
 
-        private async void WriteFrame(Frame frame)
+        private async Task WriteFrame(Frame frame)
         {
             var frameBuffer = FrameParser.ToByteArray(frame);
-            await _stream.WriteAsync(frameBuffer, 0, 7 + frame.DataLen);
+            await _stream.WriteAsync(frameBuffer, 0, frameBuffer.Length);
         }
 
         private async Task<Frame> ReadFrame(FrameFunctionType expectedFrameFunctionType)
         {
-            var buffer = new byte[_device.GetMaxInputReportLength()];
-
-            var count = await _stream.ReadAsync(buffer, 0, buffer.Length);
+            var frameBuffer = new byte[_device.GetMaxInputReportLength()];
+            var count = await _stream.ReadAsync(frameBuffer, 0, frameBuffer.Length);
 
             if (count > 0)
             {
-                var frame = FrameParser.FromByteArray(buffer.Take(count).ToArray());
+                var frame = FrameParser.FromByteArray(frameBuffer.Skip(1).ToArray()); // skip report ID
                 if (frame != null && frame.FunctionType == expectedFrameFunctionType)
                 {
                     return frame;

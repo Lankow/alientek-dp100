@@ -6,6 +6,8 @@ namespace AlientekTest
     {
         public static Frame FromByteArray(byte[] rawData)
         {
+            Console.WriteLine(BitConverter.ToString(rawData));
+
             if (rawData == null || rawData.Length < 6)
                 throw new ArgumentException("Invalid raw frame data");
 
@@ -14,8 +16,6 @@ namespace AlientekTest
             byte sequence = rawData[2];
             byte dataLen = rawData[3];
 
-            if (rawData.Length != 4 + dataLen + 2) // Header + Data + CRC
-                throw new ArgumentException("Incorrect frame length");
 
             byte[] data = new byte[dataLen];
             if (dataLen > 0)
