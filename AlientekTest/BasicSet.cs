@@ -32,16 +32,16 @@ namespace AlientekTest
             };
         }
 
-        public byte[] ToByteArray(BasicSet basicSet)
+        public byte[] ToByteArray()
         {
             var data = new byte[10];
 
-            data[0] = basicSet.Index;
-            data[1] = basicSet.State;
-            Utils.WriteUInt16(data, 2, basicSet.VoSet);
-            Utils.WriteUInt16(data, 4, basicSet.IoSet);
-            Utils.WriteUInt16(data, 6, basicSet.OvpSet);
-            Utils.WriteUInt16(data, 8, basicSet.OcpSet);
+            data[0] = Index;
+            data[1] = State;
+            Utils.WriteUInt16(data, 2, VoSet);
+            Utils.WriteUInt16(data, 4, IoSet);
+            Utils.WriteUInt16(data, 6, OvpSet);
+            Utils.WriteUInt16(data, 8, OcpSet);
 
             return data;
         }

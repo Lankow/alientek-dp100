@@ -1,6 +1,5 @@
 ﻿using HidSharp;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,11 +8,12 @@ namespace AlientekTest
     public class AlientekDP100
     {
         private const string ProductName = "ATK-MDP100";
+
         private const int VendorId = 0x2e3c;
         private const int DeviceAddress = 251;
 
         private readonly HidDevice _device;
-        private HidStream _stream;
+        private readonly HidStream _stream;
 
         public AlientekDP100()
         {
@@ -40,9 +40,46 @@ namespace AlientekTest
             _device.TryOpen(out _stream);
         }
 
-        public async Task<BasicInfo> GetBasicInfo()
+        public bool Connect()
+        {
+            return true;
+        }
+
+        public void Disconnect()
         {
 
+        }
+
+        public bool GetVoltageCurrent(out float voltage, out float current)
+        {
+            voltage = float.NaN;
+            current= float.NaN;
+
+            return true;
+        }
+
+        public void SetState(bool state)
+        {
+
+        }
+
+        public void SetVoltage(bool state)
+        {
+
+        }
+
+        public void SetCurrentLimit(bool state)
+        {
+
+        }
+
+        public void SetDefault(bool outState, float voltage, float current)
+        {
+
+        }
+
+        private async Task<BasicInfo> GetBasicInfo()
+        {
             var frame = new Frame
             {
                 DeviceAddress = DeviceAddress,
@@ -52,13 +89,63 @@ namespace AlientekTest
                 Data = Array.Empty<byte>()
             };
 
-            await WriteFrame(frame);
-
-            var response = await ReadFrame(FrameFunctionType.FRAME_BASIC_INFO);
+            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_INFO);
 
             if (response != null) return BasicInfo.FromFrame(response);
 
             return null;
+        }
+
+        private async Task<BasicSet> GetBasicSet()
+        {
+            var frameData = new byte[] { (byte)(0x80) };
+            var frame = new Frame
+            {
+                DeviceAddress = DeviceAddress,
+                FunctionType = FrameFunctionType.FRAME_BASIC_SET,
+                Sequence = 0,
+                DataLen = (byte)frameData.Length,
+                Data = frameData
+            };
+
+            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
+
+            return BasicSet.FromFrame(response);
+        }
+
+
+        private async Task<bool> SetBasic(BasicSet basicSet)
+        {
+            var copy = new BasicSet
+            {
+                Index = (byte)(basicSet.Index | 0x20),
+                State = basicSet.State,
+                VoSet = basicSet.VoSet,
+                IoSet = basicSet.IoSet,
+                OvpSet = basicSet.OvpSet,
+                OcpSet = basicSet.OcpSet
+            };
+
+            var frameData = copy.ToByteArray();
+            var frame = new Frame
+            {
+                DeviceAddress = DeviceAddress,
+                FunctionType = FrameFunctionType.FRAME_BASIC_SET,
+                Sequence = 0,
+                DataLen = (byte)frameData.Length,
+                Data = frameData
+            };
+
+            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
+            return response.Data[0] == 1;
+        }
+
+        private async Task<Frame> WriteFrameAwaitResponse(Frame frame, FrameFunctionType expectedFrameFunctionType)
+        {
+            await WriteFrame(frame);
+            var response = await ReadFrame(FrameFunctionType.FRAME_BASIC_INFO);
+
+            return response;
         }
 
         private async Task WriteFrame(Frame frame)
