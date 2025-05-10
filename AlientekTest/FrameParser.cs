@@ -6,8 +6,6 @@ namespace AlientekTest
     {
         public static Frame FromByteArray(byte[] rawData)
         {
-            Console.WriteLine(BitConverter.ToString(rawData));
-
             if (rawData == null || rawData.Length < 6)
                 throw new ArgumentException("Invalid raw frame data");
 

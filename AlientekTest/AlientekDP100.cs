@@ -60,7 +60,7 @@ namespace AlientekTest
 
         public void SetState(bool state)
         {
-
+            var basicSet = GetBasicSet().GetAwaiter().GetResult();
         }
 
         public void SetVoltage(bool state)
@@ -143,7 +143,7 @@ namespace AlientekTest
         private async Task<Frame> WriteFrameAwaitResponse(Frame frame, FrameFunctionType expectedFrameFunctionType)
         {
             await WriteFrame(frame);
-            var response = await ReadFrame(FrameFunctionType.FRAME_BASIC_INFO);
+            var response = await ReadFrame(expectedFrameFunctionType);
 
             return response;
         }
@@ -151,6 +151,8 @@ namespace AlientekTest
         private async Task WriteFrame(Frame frame)
         {
             var frameBuffer = FrameParser.ToByteArray(frame);
+            Console.WriteLine($"WRITE FRAME: {BitConverter.ToString(frameBuffer)}");
+
             await _stream.WriteAsync(frameBuffer, 0, frameBuffer.Length);
         }
 
@@ -158,6 +160,7 @@ namespace AlientekTest
         {
             var frameBuffer = new byte[_device.GetMaxInputReportLength()];
             var count = await _stream.ReadAsync(frameBuffer, 0, frameBuffer.Length);
+            Console.WriteLine($"READ FRAME: {BitConverter.ToString(frameBuffer)}");
 
             if (count > 0)
             {
