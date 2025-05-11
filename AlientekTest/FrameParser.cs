@@ -39,15 +39,16 @@ namespace AlientekTest
 
         public static byte[] ToByteArray(Frame frame)
         {
-            byte[] frameBuffer = new byte[4 + frame.Data.Length + 2];
+            byte[] frameBuffer = new byte[4 + frame.Data.Length + 2 + 1];
 
-            frameBuffer[0] = frame.DeviceAddress;
-            frameBuffer[1] = (byte)frame.FunctionType;
-            frameBuffer[2] = frame.Sequence;
-            frameBuffer[3] = frame.DataLen;
+            frameBuffer[0] = 0x00; // TODO: Handle Report ID
+            frameBuffer[1] = frame.DeviceAddress;
+            frameBuffer[2] = (byte)frame.FunctionType;
+            frameBuffer[3] = frame.Sequence;
+            frameBuffer[4] = frame.DataLen;
 
-            Buffer.BlockCopy(frame.Data, 0, frameBuffer, 4, frame.Data.Length);
-            var checksum = Crc16Modbus(frameBuffer, 0, frameBuffer.Length - 2);
+            Buffer.BlockCopy(frame.Data, 0, frameBuffer, 5, frame.Data.Length);
+            var checksum = Crc16Modbus(frameBuffer, 1, frameBuffer.Length - 2);
 
             Utils.WriteUInt16(frameBuffer, frameBuffer.Length - 2, checksum);
 
