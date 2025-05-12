@@ -60,7 +60,7 @@ namespace AlientekTest
 
         public void SetState(bool state)
         {
-            var basicSet = GetBasicSet().GetAwaiter().GetResult();
+            var basicSet = GetBasicInfo().GetAwaiter().GetResult();
         }
 
         public void SetVoltage(bool state)
@@ -150,7 +150,9 @@ namespace AlientekTest
 
         private async Task WriteFrame(Frame frame)
         {
+            // TODO: CRC Calculation is done wrong. Fix it. 
             var frameBuffer = FrameParser.ToByteArray(frame);
+            //var frameBuffer = new byte[] { 0, 251, 48, 0, 0, 49, 15 };
             Console.WriteLine($"WRITE FRAME: {BitConverter.ToString(frameBuffer)}");
 
             await _stream.WriteAsync(frameBuffer, 0, frameBuffer.Length);
