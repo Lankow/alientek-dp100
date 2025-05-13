@@ -7,7 +7,7 @@ namespace AlientekTest
         static void Main(string[] args)
         {
             AlientekDP100 alientek = new AlientekDP100();
-            alientek.SetState(true);
+            alientek.SetState(false);
         }
     }
 }

@@ -53,14 +53,17 @@ namespace AlientekTest
         public bool GetVoltageCurrent(out float voltage, out float current)
         {
             voltage = float.NaN;
-            current= float.NaN;
+            current = float.NaN;
 
             return true;
         }
 
         public void SetState(bool state)
         {
-            var basicSet = GetBasicInfo().GetAwaiter().GetResult();
+            var basicSet = GetBasicSet();
+            basicSet.State = state ? (byte)0x01 : (byte)0x00;
+
+            SetBasic(basicSet);
         }
 
         public void SetVoltage(bool state)
@@ -78,7 +81,7 @@ namespace AlientekTest
 
         }
 
-        private async Task<BasicInfo> GetBasicInfo()
+        private BasicInfo GetBasicInfo()
         {
             var frame = new Frame
             {
@@ -89,14 +92,14 @@ namespace AlientekTest
                 Data = Array.Empty<byte>()
             };
 
-            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_INFO);
+            var response = WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_INFO);
 
             if (response != null) return BasicInfo.FromFrame(response);
 
             return null;
         }
 
-        private async Task<BasicSet> GetBasicSet()
+        private BasicSet GetBasicSet()
         {
             var frameData = new byte[] { (byte)(0x80) };
             var frame = new Frame
@@ -108,13 +111,13 @@ namespace AlientekTest
                 Data = frameData
             };
 
-            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
+            var response = WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
 
             return BasicSet.FromFrame(response);
         }
 
 
-        private async Task<bool> SetBasic(BasicSet basicSet)
+        private bool SetBasic(BasicSet basicSet)
         {
             var copy = new BasicSet
             {
@@ -136,32 +139,30 @@ namespace AlientekTest
                 Data = frameData
             };
 
-            var response = await WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
+            var response = WriteFrameAwaitResponse(frame, FrameFunctionType.FRAME_BASIC_SET);
             return response.Data[0] == 1;
         }
 
-        private async Task<Frame> WriteFrameAwaitResponse(Frame frame, FrameFunctionType expectedFrameFunctionType)
+        private Frame WriteFrameAwaitResponse(Frame frame, FrameFunctionType expectedFrameFunctionType)
         {
-            await WriteFrame(frame);
-            var response = await ReadFrame(expectedFrameFunctionType);
+            WriteFrame(frame);
+            var response = ReadFrame(expectedFrameFunctionType);
 
             return response;
         }
 
-        private async Task WriteFrame(Frame frame)
+        private void WriteFrame(Frame frame)
         {
-            // TODO: CRC Calculation is done wrong. Fix it. 
             var frameBuffer = FrameParser.ToByteArray(frame);
-            //var frameBuffer = new byte[] { 0, 251, 48, 0, 0, 49, 15 };
             Console.WriteLine($"WRITE FRAME: {BitConverter.ToString(frameBuffer)}");
 
-            await _stream.WriteAsync(frameBuffer, 0, frameBuffer.Length);
+            _stream.Write(frameBuffer, 0, frameBuffer.Length);
         }
 
-        private async Task<Frame> ReadFrame(FrameFunctionType expectedFrameFunctionType)
+        private Frame ReadFrame(FrameFunctionType expectedFrameFunctionType)
         {
             var frameBuffer = new byte[_device.GetMaxInputReportLength()];
-            var count = await _stream.ReadAsync(frameBuffer, 0, frameBuffer.Length);
+            var count = _stream.Read(frameBuffer, 0, frameBuffer.Length);
             Console.WriteLine($"READ FRAME: {BitConverter.ToString(frameBuffer)}");
 
             if (count > 0)
