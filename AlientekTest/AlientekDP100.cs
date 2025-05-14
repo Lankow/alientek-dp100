@@ -1,7 +1,6 @@
 ﻿using HidSharp;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace AlientekTest
 {
@@ -12,15 +11,14 @@ namespace AlientekTest
         private const int VendorId = 0x2e3c;
         private const int DeviceAddress = 251;
 
-        private readonly HidDevice _device;
-        private readonly HidStream _stream;
+        private HidDevice _device;
+        private HidStream _stream;
 
-        public AlientekDP100()
+        private bool _isConnected = false;
+
+        public bool Connect()
         {
             var devices = DeviceList.Local.GetHidDevices();
-            var deviceList = DeviceList.Local;
-
-            _device = deviceList.GetHidDeviceOrNull(vendorID: VendorId);
 
             foreach (var device in devices)
             {
@@ -34,26 +32,31 @@ namespace AlientekTest
 
             if (_device == null)
             {
-                throw new InvalidOperationException($"Unable to open {ProductName} device.");
+                return false;
             }
 
-            _device.TryOpen(out _stream);
-        }
-
-        public bool Connect()
-        {
-            return true;
+            _isConnected = _device.TryOpen(out _stream);
+            return _isConnected;
         }
 
         public void Disconnect()
         {
-
+            _stream.Close();
+            _device = null;
+            _isConnected = false;
         }
 
         public bool GetVoltageCurrent(out float voltage, out float current)
         {
             voltage = float.NaN;
             current = float.NaN;
+
+            var basicInfo = GetBasicInfo();
+
+            if (basicInfo == null) return false;
+
+            voltage = (float)basicInfo.Vout / 1000;
+            current = (float)basicInfo.Iout / 1000;
 
             return true;
         }
@@ -66,19 +69,20 @@ namespace AlientekTest
             SetBasic(basicSet);
         }
 
-        public void SetVoltage(bool state)
+        public void SetVoltage(float voltage)
         {
+            var basicSet = GetBasicSet();
+            basicSet.VoSet = (ushort)(voltage * 1000);
 
+            SetBasic(basicSet);
         }
 
-        public void SetCurrentLimit(bool state)
+        public void SetCurrentLimit(float voltage)
         {
+            var basicSet = GetBasicSet();
+            basicSet.IoSet = (ushort)(voltage * 1000);
 
-        }
-
-        public void SetDefault(bool outState, float voltage, float current)
-        {
-
+            SetBasic(basicSet);
         }
 
         private BasicInfo GetBasicInfo()
@@ -153,17 +157,19 @@ namespace AlientekTest
 
         private void WriteFrame(Frame frame)
         {
+            if (!_isConnected) return;
+
             var frameBuffer = FrameParser.ToByteArray(frame);
-            Console.WriteLine($"WRITE FRAME: {BitConverter.ToString(frameBuffer)}");
 
             _stream.Write(frameBuffer, 0, frameBuffer.Length);
         }
 
         private Frame ReadFrame(FrameFunctionType expectedFrameFunctionType)
         {
+            if (!_isConnected) return null;
+
             var frameBuffer = new byte[_device.GetMaxInputReportLength()];
             var count = _stream.Read(frameBuffer, 0, frameBuffer.Length);
-            Console.WriteLine($"READ FRAME: {BitConverter.ToString(frameBuffer)}");
 
             if (count > 0)
             {
