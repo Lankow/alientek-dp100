@@ -1,4 +1,4 @@
-﻿namespace AlientekTest
+﻿namespace Alientek_DP100
 {
     public enum FrameFunctionType : byte
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AlientekTest
+namespace Alientek_DP100
 {
     public static class FrameParser
     {
@@ -41,7 +41,7 @@ namespace AlientekTest
         {
             byte[] frameBuffer = new byte[4 + frame.Data.Length + 2 + 1];
 
-            frameBuffer[0] = 0x00; // TODO: Handle Report ID
+            frameBuffer[0] = 0x00;
             frameBuffer[1] = frame.DeviceAddress;
             frameBuffer[2] = (byte)frame.FunctionType;
             frameBuffer[3] = frame.Sequence;

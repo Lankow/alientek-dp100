@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AlientekTest
+namespace Alientek_DP100
 {
     internal class Utils
     {
@@ -12,7 +12,7 @@ namespace AlientekTest
         public static void WriteUInt16(byte[] data, int offset, ushort value)
         {
             data[offset] = (byte)(value & 0xFF);
-            data[offset + 1] = (byte)((value >> 8) & 0xFF);
+            data[offset + 1] = (byte)(value >> 8 & 0xFF);
         }
     }
 }

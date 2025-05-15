@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AlientekTest
+namespace Alientek_DP100
 {
     public class BasicInfo
     {

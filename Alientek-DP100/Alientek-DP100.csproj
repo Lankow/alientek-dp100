@@ -5,4 +5,8 @@
     <RootNamespace>Alientek_DP100</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HidSharp" Version="2.1.0" />
+  </ItemGroup>
+
 </Project>

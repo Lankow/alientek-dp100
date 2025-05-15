@@ -1,0 +1,15 @@
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\AlientekTest.exe.config
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\AlientekTest.exe
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\AlientekTest.pdb
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\Alientek-DP100.dll
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\Device.Net.dll
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\HidSharp.dll
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\Alientek-DP100.pdb
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\Device.Net.xml
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\HidSharp.pdb
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\bin\Debug\HidSharp.xml
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\obj\Debug\AlientekExample.csproj.AssemblyReference.cache
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\obj\Debug\AlientekExample.csproj.CoreCompileInputs.cache
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\obj\Debug\Alientek.9D5A05A7.Up2Date
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\obj\Debug\AlientekTest.exe
+C:\Users\Voknal\Desktop\Coding\mainProjects\Alientek-DP100\AlientekTest\obj\Debug\AlientekTest.pdb

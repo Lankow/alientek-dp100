@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Alientek_DP100;
+using System;
 
-namespace AlientekTest
+namespace AlientekExample
 {
     internal class Program
     {
@@ -14,7 +15,6 @@ namespace AlientekTest
 
             alientek.GetVoltageCurrent(out float voltage, out float current);
             Console.WriteLine($"Voltage: {voltage}, Current: {current}");
-
 
             alientek.Disconnect();
         }
