@@ -2,8 +2,18 @@
 
 namespace Alientek_DP100
 {
+    /// <summary>
+    /// Provides functionality to serialize and deserialize communication frames for the Alientek DP100 device.
+    /// </summary>
     public static class FrameParser
     {
+        /// <summary>
+        /// Parses a byte array into a <see cref="Frame"/> object, verifying data integrity via CRC-16 (Modbus).
+        /// </summary>
+        /// <param name="rawData">The raw byte array representing a received frame.</param>
+        /// <returns>A <see cref="Frame"/> object containing the parsed data.</returns>
+        /// <exception cref="ArgumentException">Thrown if the input data is null or too short.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if CRC validation fails.</exception>
         public static Frame FromByteArray(byte[] rawData)
         {
             if (rawData == null || rawData.Length < 6)
@@ -13,7 +23,6 @@ namespace Alientek_DP100
             byte functionType = rawData[1];
             byte sequence = rawData[2];
             byte dataLen = rawData[3];
-
 
             byte[] data = new byte[dataLen];
             if (dataLen > 0)
@@ -37,11 +46,17 @@ namespace Alientek_DP100
             };
         }
 
+        /// <summary>
+        /// Converts a <see cref="Frame"/> object into a byte array suitable for transmission,
+        /// including a CRC-16 checksum and a report ID prefix.
+        /// </summary>
+        /// <param name="frame">The <see cref="Frame"/> to serialize.</param>
+        /// <returns>A byte array representing the frame with CRC and header.</returns>
         public static byte[] ToByteArray(Frame frame)
         {
             byte[] frameBuffer = new byte[4 + frame.Data.Length + 2 + 1];
 
-            frameBuffer[0] = 0x00;
+            frameBuffer[0] = 0x00; // Report ID (0x00 for HID raw transfer)
             frameBuffer[1] = frame.DeviceAddress;
             frameBuffer[2] = (byte)frame.FunctionType;
             frameBuffer[3] = frame.Sequence;
@@ -55,6 +70,13 @@ namespace Alientek_DP100
             return frameBuffer;
         }
 
+        /// <summary>
+        /// Computes the CRC-16 checksum using the Modbus polynomial (0xA001).
+        /// </summary>
+        /// <param name="data">The byte array to compute the CRC on.</param>
+        /// <param name="offset">The offset in the array to begin CRC computation.</param>
+        /// <param name="length">The number of bytes to include in the computation.</param>
+        /// <returns>The computed CRC-16 value.</returns>
         private static ushort Crc16Modbus(byte[] data, int offset, int length)
         {
             const ushort polynomial = 0xA001;
@@ -74,5 +96,4 @@ namespace Alientek_DP100
             return crc;
         }
     }
-
 }

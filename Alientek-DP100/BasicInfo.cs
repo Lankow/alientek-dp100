@@ -2,18 +2,62 @@
 
 namespace Alientek_DP100
 {
+    /// <summary>
+    /// Represents real-time information retrieved from the Alientek DP100 device.
+    /// </summary>
     public class BasicInfo
     {
+        /// <summary>
+        /// Gets or sets the input voltage in millivolts.
+        /// </summary>
         public ushort Vin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output voltage in millivolts.
+        /// </summary>
         public ushort Vout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output current in milliamperes.
+        /// </summary>
         public ushort Iout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum output voltage setting in millivolts.
+        /// </summary>
         public ushort VoMax { get; set; }
+
+        /// <summary>
+        /// Gets or sets the temperature reading from sensor 1.
+        /// </summary>
         public ushort Temp1 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the temperature reading from sensor 2.
+        /// </summary>
         public ushort Temp2 { get; set; }
+
+        /// <summary>
+        /// Gets or sets the internal 5V DC rail voltage in millivolts.
+        /// </summary>
         public ushort Dc5V { get; set; }
+
+        /// <summary>
+        /// Gets or sets the output mode (e.g., constant voltage/current).
+        /// </summary>
         public byte OutMode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the device working state or status code.
+        /// </summary>
         public byte WorkSt { get; set; }
 
+        /// <summary>
+        /// Creates a <see cref="BasicInfo"/> instance from a raw device frame.
+        /// </summary>
+        /// <param name="frame">The frame received from the device.</param>
+        /// <returns>A <see cref="BasicInfo"/> object populated with the parsed values.</returns>
+        /// <exception cref="ArgumentException">Thrown when the frame is of the wrong type or contains insufficient data.</exception>
         public static BasicInfo FromFrame(Frame frame)
         {
             if (frame.FunctionType != FrameFunctionType.FRAME_BASIC_INFO)
