@@ -82,15 +82,15 @@ Alientek-DP100/*.vsp
 Alientek-DP100/*.psess
 
 ########################################
-# AlientekTest specific ignores
+# DP100App specific ignores
 ########################################
 
-AlientekTest/[Bb]in/
-AlientekTest/[Oo]bj/
-AlientekTest/[Ll]og/
-AlientekTest/*.user
-AlientekTest/*.suo
-AlientekTest/TestResult*/
-AlientekTest/coverage*.*
-AlientekTest/*.vsp
-AlientekTest/*.psess
+DP100App/[Bb]in/
+DP100App/[Oo]bj/
+DP100App/[Ll]og/
+DP100App/*.user
+DP100App/*.suo
+DP100App/TestResult*/
+DP100App/coverage*.*
+DP100App/*.vsp
+DP100App/*.psess
