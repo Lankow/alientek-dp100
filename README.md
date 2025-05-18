@@ -68,6 +68,14 @@ Alientek_DP100/
 
 ---
 
+## Example GUI Application
+
+An example WinForms application demonstrating how to use this library is included under the [`DP100App`](./DP100App) directory.
+
+![Example GUI Screenshot](./DP100App/example.jpg)
+
+---
+
 ## Acknowledgments
 
 - Based on [webdp100](https://github.com/scottbez1/webdp100) by [@scottbez1](https://github.com/scottbez1)
