@@ -80,7 +80,7 @@ namespace Alientek_DP100
         /// <param name="voltage">The voltage output in volts.</param>
         /// <param name="current">The current output in amperes.</param>
         /// <returns><c>true</c> if successful; otherwise, <c>false</c>.</returns>
-        public bool GetVoltageCurrent(out float voltage, out float current)
+        public bool GetOutputVoltageCurrent(out float voltage, out float current)
         {
             voltage = float.NaN;
             current = float.NaN;
@@ -91,6 +91,27 @@ namespace Alientek_DP100
 
             voltage = (float)basicInfo.Vout / VoltageCurrentScaler;
             current = (float)basicInfo.Iout / VoltageCurrentScaler;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Gets the current voltage and current input of the device.
+        /// </summary>
+        /// <param name="voltage">The voltage input in volts.</param>
+        /// <param name="current">The current input in amperes.</param>
+        /// <returns><c>true</c> if successful; otherwise, <c>false</c>.</returns>
+        public bool GetInputVoltageCurrent(out float voltage, out float current)
+        {
+            voltage = float.NaN;
+            current = float.NaN;
+
+            var basicSet = GetBasicSet();
+
+            if (basicSet == null) return false;
+
+            voltage = (float)basicSet.VoSet / VoltageCurrentScaler;
+            current = (float)basicSet.IoSet / VoltageCurrentScaler;
 
             return true;
         }

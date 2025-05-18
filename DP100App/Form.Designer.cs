@@ -28,58 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            buttonConnect = new Button();
-            numericVoltage = new NumericUpDown();
-            numericCurrent = new NumericUpDown();
-            voltageSetLabel = new Label();
+            ConnectButton = new Button();
+            NumericVoltage = new NumericUpDown();
+            NumericCurrent = new NumericUpDown();
+            VoltageSetLabel = new Label();
             currentSetLabel = new Label();
-            textVoltage = new TextBox();
-            voltageLabel = new Label();
-            textBox2 = new TextBox();
+            TextVoltage = new TextBox();
+            VoltageLabel = new Label();
+            TextCurrent = new TextBox();
             currentLabel = new Label();
-            turnOnButton = new Button();
-            turnOffButton = new Button();
-            ((System.ComponentModel.ISupportInitialize)numericVoltage).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericCurrent).BeginInit();
+            TurnOnButton = new Button();
+            TurnOffButton = new Button();
+            ((System.ComponentModel.ISupportInitialize)NumericVoltage).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericCurrent).BeginInit();
             SuspendLayout();
             // 
-            // buttonConnect
+            // ConnectButton
             // 
-            buttonConnect.Font = new Font("Segoe UI", 11F);
-            buttonConnect.Location = new Point(12, 137);
-            buttonConnect.Name = "buttonConnect";
-            buttonConnect.Size = new Size(150, 37);
-            buttonConnect.TabIndex = 1;
-            buttonConnect.Text = "Connect";
-            buttonConnect.UseVisualStyleBackColor = true;
-            buttonConnect.Click += buttonConnect_Click;
+            ConnectButton.Font = new Font("Segoe UI", 11F);
+            ConnectButton.Location = new Point(12, 137);
+            ConnectButton.Name = "ConnectButton";
+            ConnectButton.Size = new Size(150, 37);
+            ConnectButton.TabIndex = 1;
+            ConnectButton.Text = "Connect";
+            ConnectButton.UseVisualStyleBackColor = true;
+            ConnectButton.Click += ConnectButton_Click;
             // 
-            // numericVoltage
+            // NumericVoltage
             // 
-            numericVoltage.DecimalPlaces = 2;
-            numericVoltage.Location = new Point(12, 33);
-            numericVoltage.Name = "numericVoltage";
-            numericVoltage.Size = new Size(150, 23);
-            numericVoltage.TabIndex = 2;
+            NumericVoltage.DecimalPlaces = 2;
+            NumericVoltage.Enabled = false;
+            NumericVoltage.Location = new Point(12, 33);
+            NumericVoltage.Name = "NumericVoltage";
+            NumericVoltage.Size = new Size(150, 23);
+            NumericVoltage.TabIndex = 2;
             // 
-            // numericCurrent
+            // NumericCurrent
             // 
-            numericCurrent.DecimalPlaces = 2;
-            numericCurrent.Location = new Point(12, 93);
-            numericCurrent.Name = "numericCurrent";
-            numericCurrent.Size = new Size(150, 23);
-            numericCurrent.TabIndex = 3;
+            NumericCurrent.DecimalPlaces = 2;
+            NumericCurrent.Enabled = false;
+            NumericCurrent.Location = new Point(12, 93);
+            NumericCurrent.Name = "NumericCurrent";
+            NumericCurrent.Size = new Size(150, 23);
+            NumericCurrent.TabIndex = 3;
             // 
-            // voltageSetLabel
+            // VoltageSetLabel
             // 
-            voltageSetLabel.AutoSize = true;
-            voltageSetLabel.Font = new Font("Segoe UI", 12F);
-            voltageSetLabel.Location = new Point(9, 9);
-            voltageSetLabel.Margin = new Padding(0);
-            voltageSetLabel.Name = "voltageSetLabel";
-            voltageSetLabel.Size = new Size(152, 21);
-            voltageSetLabel.TabIndex = 4;
-            voltageSetLabel.Text = "Voltage  Setpoint [V]";
+            VoltageSetLabel.AutoSize = true;
+            VoltageSetLabel.Font = new Font("Segoe UI", 12F);
+            VoltageSetLabel.Location = new Point(9, 9);
+            VoltageSetLabel.Margin = new Padding(0);
+            VoltageSetLabel.Name = "VoltageSetLabel";
+            VoltageSetLabel.Size = new Size(152, 21);
+            VoltageSetLabel.TabIndex = 4;
+            VoltageSetLabel.Text = "Voltage  Setpoint [V]";
             // 
             // currentSetLabel
             // 
@@ -92,30 +94,34 @@
             currentSetLabel.TabIndex = 5;
             currentSetLabel.Text = "Current Setpoint [A]";
             // 
-            // textVoltage
+            // TextVoltage
             // 
-            textVoltage.Location = new Point(190, 33);
-            textVoltage.Name = "textVoltage";
-            textVoltage.Size = new Size(150, 23);
-            textVoltage.TabIndex = 6;
+            TextVoltage.Enabled = false;
+            TextVoltage.Location = new Point(190, 33);
+            TextVoltage.Name = "TextVoltage";
+            TextVoltage.ReadOnly = true;
+            TextVoltage.Size = new Size(150, 23);
+            TextVoltage.TabIndex = 6;
             // 
-            // voltageLabel
+            // VoltageLabel
             // 
-            voltageLabel.AutoSize = true;
-            voltageLabel.Font = new Font("Segoe UI", 12F);
-            voltageLabel.Location = new Point(190, 9);
-            voltageLabel.Margin = new Padding(0);
-            voltageLabel.Name = "voltageLabel";
-            voltageLabel.Size = new Size(86, 21);
-            voltageLabel.TabIndex = 7;
-            voltageLabel.Text = "Voltage [V]";
+            VoltageLabel.AutoSize = true;
+            VoltageLabel.Font = new Font("Segoe UI", 12F);
+            VoltageLabel.Location = new Point(190, 9);
+            VoltageLabel.Margin = new Padding(0);
+            VoltageLabel.Name = "VoltageLabel";
+            VoltageLabel.Size = new Size(86, 21);
+            VoltageLabel.TabIndex = 7;
+            VoltageLabel.Text = "Voltage [V]";
             // 
-            // textBox2
+            // TextCurrent
             // 
-            textBox2.Location = new Point(190, 93);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(150, 23);
-            textBox2.TabIndex = 8;
+            TextCurrent.Enabled = false;
+            TextCurrent.Location = new Point(190, 93);
+            TextCurrent.Name = "TextCurrent";
+            TextCurrent.ReadOnly = true;
+            TextCurrent.Size = new Size(150, 23);
+            TextCurrent.TabIndex = 8;
             // 
             // currentLabel
             // 
@@ -128,63 +134,66 @@
             currentLabel.TabIndex = 9;
             currentLabel.Text = "Current [A]";
             // 
-            // turnOnButton
+            // TurnOnButton
             // 
-            turnOnButton.Font = new Font("Segoe UI", 11F);
-            turnOnButton.Location = new Point(190, 137);
-            turnOnButton.Name = "turnOnButton";
-            turnOnButton.Size = new Size(75, 37);
-            turnOnButton.TabIndex = 10;
-            turnOnButton.Text = "ON";
-            turnOnButton.UseVisualStyleBackColor = true;
-            turnOnButton.Click += turnOnButton_Click;
+            TurnOnButton.Enabled = false;
+            TurnOnButton.Font = new Font("Segoe UI", 11F);
+            TurnOnButton.Location = new Point(190, 137);
+            TurnOnButton.Name = "TurnOnButton";
+            TurnOnButton.Size = new Size(75, 37);
+            TurnOnButton.TabIndex = 10;
+            TurnOnButton.Text = "ON";
+            TurnOnButton.UseVisualStyleBackColor = true;
+            TurnOnButton.Click += TurnOnButton_Click;
             // 
-            // turnOffButton
+            // TurnOffButton
             // 
-            turnOffButton.Font = new Font("Segoe UI", 11F);
-            turnOffButton.Location = new Point(265, 137);
-            turnOffButton.Name = "turnOffButton";
-            turnOffButton.Size = new Size(75, 37);
-            turnOffButton.TabIndex = 11;
-            turnOffButton.Text = "OFF";
-            turnOffButton.UseVisualStyleBackColor = true;
-            turnOffButton.Click += turnOffButton_Click;
+            TurnOffButton.Enabled = false;
+            TurnOffButton.Font = new Font("Segoe UI", 11F);
+            TurnOffButton.Location = new Point(265, 137);
+            TurnOffButton.Name = "TurnOffButton";
+            TurnOffButton.Size = new Size(75, 37);
+            TurnOffButton.TabIndex = 11;
+            TurnOffButton.Text = "OFF";
+            TurnOffButton.UseVisualStyleBackColor = true;
+            TurnOffButton.Click += TurnOffButton_Click;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(354, 197);
-            Controls.Add(turnOffButton);
-            Controls.Add(turnOnButton);
+            Controls.Add(TurnOffButton);
+            Controls.Add(TurnOnButton);
             Controls.Add(currentLabel);
-            Controls.Add(textBox2);
-            Controls.Add(voltageLabel);
-            Controls.Add(textVoltage);
+            Controls.Add(TextCurrent);
+            Controls.Add(VoltageLabel);
+            Controls.Add(TextVoltage);
             Controls.Add(currentSetLabel);
-            Controls.Add(voltageSetLabel);
-            Controls.Add(numericCurrent);
-            Controls.Add(numericVoltage);
-            Controls.Add(buttonConnect);
+            Controls.Add(VoltageSetLabel);
+            Controls.Add(NumericCurrent);
+            Controls.Add(NumericVoltage);
+            Controls.Add(ConnectButton);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             Text = "Alientek-DP100";
-            ((System.ComponentModel.ISupportInitialize)numericVoltage).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericCurrent).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericVoltage).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericCurrent).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-        private Button buttonConnect;
-        private NumericUpDown numericVoltage;
-        private NumericUpDown numericCurrent;
-        private Label voltageSetLabel;
+        private Button ConnectButton;
+        private NumericUpDown NumericVoltage;
+        private NumericUpDown NumericCurrent;
+        private Label VoltageSetLabel;
         private Label currentSetLabel;
-        private TextBox textVoltage;
-        private Label voltageLabel;
-        private TextBox textBox2;
+        private TextBox TextVoltage;
+        private Label VoltageLabel;
+        private TextBox TextCurrent;
         private Label currentLabel;
-        private Button turnOnButton;
-        private Button turnOffButton;
+        private Button TurnOnButton;
+        private Button TurnOffButton;
     }
 }
