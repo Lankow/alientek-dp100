@@ -26,6 +26,16 @@ namespace Alientek_DP100
         private bool _isConnected = false;
 
         /// <summary>
+        /// Static constructor for the <see cref="AlientekDP100"/> class.
+        /// Initializes the embedded assembly resolver to allow loading of dependencies
+        /// directly from embedded resources within the assembly.
+        /// </summary>
+        static AlientekDP100()
+        {
+            EmbeddedAssemblyLoader.Attach();
+        }
+
+        /// <summary>
         /// Connects to the Alientek DP100 device via USB HID.
         /// </summary>
         /// <returns><c>true</c> if the device is successfully connected; otherwise, <c>false</c>.</returns>

@@ -6,7 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HidSharp" Version="2.1.0" />
+	<EmbeddedResource Include="libs\HidSharp.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="HidSharp">
+      <HintPath>libs\HidSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
