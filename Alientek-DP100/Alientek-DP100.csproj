@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<EmbeddedResource Include="libs\HidSharp.dll" />
+    <Compile Remove="dll\**" />
+    <EmbeddedResource Remove="dll\**" />
+    <None Remove="dll\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="HidSharp">
-      <HintPath>libs\HidSharp.dll</HintPath>
+      <HintPath>dll\HidSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 

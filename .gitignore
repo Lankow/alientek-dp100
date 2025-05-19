@@ -29,7 +29,6 @@
 *.obj
 *.pch
 *.exe
-*.dll
 *.appx
 *.msi
 *.msm
