@@ -41,19 +41,10 @@ namespace Alientek_DP100
         /// <returns><c>true</c> if the device is successfully connected; otherwise, <c>false</c>.</returns>
         public bool Connect()
         {
-            var devices = DeviceList.Local.GetHidDevices();
-
-            foreach (var device in devices)
-            {
-                if (device.GetProductName() == ProductName && device.VendorID == VendorId)
-                {
-                    Console.WriteLine($"Found {device.GetProductName()}, Vendor ID: {device.VendorID}, Product ID: {device.ProductID}");
-                    _device = device;
-                    break;
-                }
-            }
-
-            if (_device == null)
+            var deviceList = DeviceList.Local;
+            _device = deviceList.GetHidDeviceOrNull(vendorID: VendorId);
+            
+            if (_device == null || _device.GetProductName() != ProductName)
             {
                 return false;
             }

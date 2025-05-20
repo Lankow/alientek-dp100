@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="dll\**" />
-    <EmbeddedResource Remove="dll\**" />
-    <None Remove="dll\**" />
+    <EmbeddedResource Include="dll\HidSharp.dll" />
   </ItemGroup>
 
   <ItemGroup>
